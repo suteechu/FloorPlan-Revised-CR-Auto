@@ -240,11 +240,11 @@ function App() {
         {/* 🌟 Header & Control Panel */}
         <div className="glass-panel" style={{ padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, gap: '20px' }}>
           
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
-                <h1 style={{ margin: 0, fontSize: '1.4rem', fontWeight: '900', letterSpacing: '1px', color: 'var(--color-primary)' }}>FloorPlan-Revised-CR-Auto</h1>
-                <span className="badge-primary">v4.1</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+                <h1 style={{ margin: 0, fontSize: '1.35rem', fontWeight: '900', letterSpacing: '0.5px', color: 'var(--color-primary)', whiteSpace: 'nowrap' }}>FloorPlan-Revised-CR-Auto</h1>
+                <span className="badge-primary" style={{ whiteSpace: 'nowrap' }}>v4.1</span>
               </div>
               
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
