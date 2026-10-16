@@ -56,6 +56,19 @@ body, html { margin: 0; padding: 0; min-height: 100%; font-family: 'Inter', 'Sar
 .btn-ocr { color: var(--color-primary) !important; border-color: rgba(0, 82, 204, 0.3) !important; }
 .btn-ocr:hover { background: rgba(0, 82, 204, 0.08) !important; border-color: var(--color-primary) !important; }
 
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0;
+}
+.btn-icon svg {
+  display: block;
+}
+
 .cat-toggle {
   background: var(--bg-panel);
   border: 1px solid var(--border-color);

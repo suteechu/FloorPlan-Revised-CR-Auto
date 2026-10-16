@@ -266,17 +266,86 @@ function App() {
             </div>
           </div>
           
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-            <button className={`btn-tool ${aiEnabled ? 'active' : ''}`} onClick={toggleAiMode} style={{ borderColor: aiEnabled ? '#9c27b0' : '', color: aiEnabled ? '#9c27b0' : '' }}>
-              {aiEnabled ? '✨ AI Mode: ON' : '✨ AI Mode: OFF'}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
+            <button 
+              className={`btn-tool ${aiEnabled ? 'active' : ''}`} 
+              onClick={toggleAiMode} 
+              style={{ borderColor: aiEnabled ? '#9c27b0' : '', color: aiEnabled ? '#9c27b0' : '', display: 'inline-flex', alignItems: 'center', gap: '5px', height: '36px', padding: '0 10px' }}
+              title={aiEnabled ? 'คลิกเพื่อปิด AI Mode' : 'คลิกเพื่อเปิด AI Mode'}
+            >
+              <span>✨</span>
+              <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>AI</span>
             </button>
-            <button className="btn-tool btn-ocr" onClick={handleAiSettings} style={{ backgroundColor: '#9c27b0', color: '#fff', border: 'none' }}>AI Settings</button>
-            <button className="btn-tool" onClick={() => setShowHelp(true)}>คู่มือ</button>
-            <button className="btn-tool btn-ocr" onClick={handleOpenOcrConfig}>ตั้งค่า OCR</button>
-            <button className={`btn-tool ${!isDarkMode ? 'active' : ''}`} onClick={() => setIsDarkMode(!isDarkMode)}>
-              {isDarkMode ? 'สว่าง (LIGHT)' : 'มืด (DARK)'}
+            
+            <button 
+              className="btn-tool btn-icon" 
+              onClick={handleAiSettings} 
+              style={{ backgroundColor: 'rgba(156, 39, 176, 0.1)', color: '#9c27b0', borderColor: 'rgba(156, 39, 176, 0.3)' }} 
+              title="ตั้งค่า Gemini AI API Key"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 2l-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1.5-1.5L8 9l-1.5-1.5L5 9"></path>
+                <circle cx="7.5" cy="16.5" r="5.5"></circle>
+              </svg>
             </button>
-            <button className="btn-tool btn-reset" onClick={handleReset}>เริ่มใหม่</button>
+
+            <button 
+              className="btn-tool btn-icon" 
+              onClick={() => setShowHelp(true)} 
+              title="คู่มือการใช้งาน (Manual)"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+            </button>
+
+            <button 
+              className="btn-tool btn-icon btn-ocr" 
+              onClick={handleOpenOcrConfig} 
+              title="ตั้งค่า OCR (OCR Configuration)"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </button>
+
+            <button 
+              className="btn-tool btn-icon" 
+              onClick={() => setIsDarkMode(!isDarkMode)} 
+              title={isDarkMode ? 'เปลี่ยนเป็นโหมดสว่าง (Light Mode)' : 'เปลี่ยนเป็นโหมดมืด (Dark Mode)'}
+            >
+              {isDarkMode ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="5"></circle>
+                  <line x1="12" y1="1" x2="12" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="23"></line>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                  <line x1="1" y1="12" x2="3" y2="12"></line>
+                  <line x1="21" y1="12" x2="23" y2="12"></line>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+              )}
+            </button>
+
+            <button 
+              className="btn-tool btn-icon btn-reset" 
+              onClick={handleReset} 
+              title="เริ่มใหม่ (Reset All)"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+            </button>
           </div>
         </div>
 
