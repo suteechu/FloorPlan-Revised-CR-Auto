@@ -236,7 +236,6 @@ export default function usePdfProcessor(masterFile, crFiles, activeCategories, c
         
         try {
           let dwgNo = null;
-          let isCover = false;
 
           let result = await processOcrOnPage(masterPdfjs, m, cropConfig, activeCats, engWorker);
           dwgNo = result.finalMatch;
@@ -268,7 +267,7 @@ export default function usePdfProcessor(masterFile, crFiles, activeCategories, c
           if (!dwgNo) {
             // Pass coverCropConfig to the processing function
             const coverRes = await processCoverOcr(masterPdfjs, m, coverCropConfig, thaEngWorker);
-            if (coverRes.isCover) { dwgNo = 'COVER'; isCover = true; addLog(`       [พบล็อค] หน้าปก (COVER) อยู่ที่หน้า ${m}`); }
+            if (coverRes.isCover) { dwgNo = 'COVER'; addLog(`       [พบล็อค] หน้าปก (COVER) อยู่ที่หน้า ${m}`); }
           }
 
           if (dwgNo) {

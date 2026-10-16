@@ -14,37 +14,90 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 // 🌟 ลำดับหมวดหมู่
 const CATEGORIES = ['AR', 'IN', 'EE', 'AC', 'ST', 'SN', 'ME', 'AD'];
 
+const DEFAULT_CROP = { width: 16, height: 15, xOffset: 0, yOffset: 0 };
+const DEFAULT_ALT_CROP = { width: 25, height: 25, xOffset: 0, yOffset: 0 };
+const DEFAULT_CR_LIST = { width: 25, height: 10, xOffset: 0, yOffset: 0 };
+const DEFAULT_COVER = { width: 30, height: 10, xOffset: 0, yOffset: 0 };
+
 function App() {
   const [masterFile, setMasterFile] = useState(null);
   const [crFiles, setCrFiles] = useState([]); 
   const [dragMaster, setDragMaster] = useState(false);
   const [dragCr, setDragCr] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
 
   // AI State
   const [aiEnabled, setAiEnabled] = useState(localStorage.getItem('aiEnabled') === 'true');
   const [geminiApiKey, setGeminiApiKey] = useState(localStorage.getItem('geminiApiKey') || '');
 
   const [showOcrConfig, setShowOcrConfig] = useState(false);
-  const [cropConfig, setCropConfig] = useState({ width: 16, height: 15 }); 
-  const [altCropConfig, setAltCropConfig] = useState({ width: 25, height: 25 }); 
-  const [crListCropConfig, setCrListCropConfig] = useState({ width: 25, height: 10 });
-  const [coverCropConfig, setCoverCropConfig] = useState({ width: 30, height: 10 });
+  const [cropConfig, setCropConfig] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ocr_cropConfig');
+      return saved ? JSON.parse(saved) : DEFAULT_CROP;
+    } catch { return DEFAULT_CROP; }
+  });
+  const [altCropConfig, setAltCropConfig] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ocr_altCropConfig');
+      return saved ? JSON.parse(saved) : DEFAULT_ALT_CROP;
+    } catch { return DEFAULT_ALT_CROP; }
+  });
+  const [crListCropConfig, setCrListCropConfig] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ocr_crListCropConfig');
+      return saved ? JSON.parse(saved) : DEFAULT_CR_LIST;
+    } catch { return DEFAULT_CR_LIST; }
+  });
+  const [coverCropConfig, setCoverCropConfig] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ocr_coverCropConfig');
+      return saved ? JSON.parse(saved) : DEFAULT_COVER;
+    } catch { return DEFAULT_COVER; }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
+
+  useEffect(() => {
+    localStorage.setItem('ocr_cropConfig', JSON.stringify(cropConfig));
+  }, [cropConfig]);
+  useEffect(() => {
+    localStorage.setItem('ocr_altCropConfig', JSON.stringify(altCropConfig));
+  }, [altCropConfig]);
+  useEffect(() => {
+    localStorage.setItem('ocr_crListCropConfig', JSON.stringify(crListCropConfig));
+  }, [crListCropConfig]);
+  useEffect(() => {
+    localStorage.setItem('ocr_coverCropConfig', JSON.stringify(coverCropConfig));
+  }, [coverCropConfig]);
+
+  const handleResetOcrDefaults = () => {
+    setCropConfig(DEFAULT_CROP);
+    setAltCropConfig(DEFAULT_ALT_CROP);
+    setCrListCropConfig(DEFAULT_CR_LIST);
+    setCoverCropConfig(DEFAULT_COVER);
+    localStorage.removeItem('ocr_cropConfig');
+    localStorage.removeItem('ocr_altCropConfig');
+    localStorage.removeItem('ocr_crListCropConfig');
+    localStorage.removeItem('ocr_coverCropConfig');
+  };
 
   const [activeCategories, setActiveCategories] = useState({
     AR: true, IN: true, EE: true, AC: true, ST: true, SN: true, ME: true, AD: false
   });
 
-  const [resetKey, setResetKey] = useState(Date.now());
+  const [resetKey, setResetKey] = useState(0);
   const [copied, setCopied] = useState(false);
 
   const processor = usePdfProcessor(masterFile, crFiles, activeCategories, cropConfig, altCropConfig, crListCropConfig, coverCropConfig, isDarkMode, CATEGORIES, aiEnabled, geminiApiKey);
   const {
     logs, isProcessing, downloadUrl, crSummary, stats, downloadFilename,
     progress, previewData, testPageNum, reviewData, manualInputs,
-    setTestPageNum, setManualInputs, setReviewData, setIsProcessing, setProgress,
-    addLog, handleTestOcr, handleScanFiles, handleConfirmExecute, exportLogReport, resetProcessor
+    setTestPageNum, setManualInputs, setReviewData,
+    handleTestOcr, handleScanFiles, handleConfirmExecute, exportLogReport, resetProcessor
   } = processor;
 
   const logEndRef = useRef(null);
@@ -63,7 +116,7 @@ function App() {
   const handleReset = () => {
     setMasterFile(null);
     setCrFiles([]);
-    setResetKey(Date.now()); 
+    setResetKey(prev => prev + 1); 
     resetProcessor();
   };
 
@@ -159,7 +212,7 @@ function App() {
   };
 
   return (
-    <div className={isDarkMode ? 'theme-dark' : 'theme-light'} style={{ display: 'flex', justifyContent: 'center', height: '100vh', backgroundColor: 'var(--bg-app)', color: 'var(--text-main)', paddingTop: '30px', paddingBottom: '20px', transition: 'background-color 0.2s' }}>
+    <div className={isDarkMode ? 'theme-dark' : 'theme-light'} style={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', height: 'auto', backgroundColor: 'var(--bg-app)', color: 'var(--text-main)', padding: '24px 16px', boxSizing: 'border-box', transition: 'background-color 0.2s' }}>
       <PreFlightModal 
         reviewData={reviewData} masterFile={masterFile} crFiles={crFiles} manualInputs={manualInputs} 
         setManualInputs={setManualInputs} setReviewData={setReviewData} 
@@ -177,11 +230,12 @@ function App() {
         masterFile={masterFile} crFiles={crFiles}
         aiEnabled={aiEnabled} toggleAiMode={toggleAiMode}
         geminiApiKey={geminiApiKey} setGeminiApiKey={(val) => { setGeminiApiKey(val); localStorage.setItem('geminiApiKey', val); }}
+        onResetDefaults={handleResetOcrDefaults}
       />
 
       <HelpModal showHelp={showHelp} setShowHelp={setShowHelp} />
 
-      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '1024px', gap: '16px', height: '100%' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '1024px', gap: '16px' }}>
 
         {/* 🌟 Header & Control Panel */}
         <div className="glass-panel" style={{ padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, gap: '20px' }}>
@@ -214,7 +268,7 @@ function App() {
             </div>
           </div>
           
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             <button className={`btn-tool ${aiEnabled ? 'active' : ''}`} onClick={toggleAiMode} style={{ borderColor: aiEnabled ? '#9c27b0' : '', color: aiEnabled ? '#9c27b0' : '' }}>
               {aiEnabled ? '✨ AI Mode: ON' : '✨ AI Mode: OFF'}
             </button>
@@ -241,7 +295,12 @@ function App() {
               <span style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: '700', letterSpacing: '0.5px' }}>[1] ไฟล์ MASTER</span>
               {masterFile ? <span style={{ fontSize: '0.85rem', color: 'var(--color-up)', fontWeight: 'bold' }}>เชื่อมต่อแล้ว</span> : <span style={{ fontSize: '0.8rem', color: 'var(--border-color)' }}>รอไฟล์ (AWAITING)</span>}
             </div>
-            <input key={resetKey || 'master'} type="file" accept="application/pdf" onChange={(e) => setMasterFile(e.target.files[0])} disabled={isProcessing} style={{ width: '100%' }} />
+            <input key={resetKey ? `master-${resetKey}` : 'master'} type="file" accept="application/pdf" onChange={(e) => setMasterFile(e.target.files[0])} disabled={isProcessing} style={{ width: '100%' }} />
+            {masterFile && (
+              <div style={{ fontSize: '0.8rem', color: 'var(--color-primary)', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={masterFile.name}>
+                📄 {masterFile.name} ({(masterFile.size / (1024 * 1024)).toFixed(2)} MB)
+              </div>
+            )}
           </div>
 
           <div 
@@ -269,7 +328,12 @@ function App() {
               </div>
               {crFiles.length > 0 ? <span style={{ fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 'bold' }}>พบ {crFiles.length} รายการ</span> : <span style={{ fontSize: '0.8rem', color: 'var(--border-color)' }}>รอไฟล์ (AWAITING)</span>}
             </div>
-            <input key={(resetKey + 1) || 'cr'} type="file" multiple accept="application/pdf" onChange={(e) => setCrFiles(Array.from(e.target.files))} disabled={isProcessing} style={{ width: '100%' }} />
+            <input key={resetKey ? `cr-${resetKey}` : 'cr'} type="file" multiple accept="application/pdf" onChange={(e) => setCrFiles(Array.from(e.target.files))} disabled={isProcessing} style={{ width: '100%' }} />
+            {crFiles.length > 0 && (
+              <div style={{ fontSize: '0.8rem', color: 'var(--color-primary)', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                📁 รวม {crFiles.length} ไฟล์ ({(crFiles.reduce((acc, f) => acc + f.size, 0) / (1024 * 1024)).toFixed(2)} MB)
+              </div>
+            )}
           </div>
 
           <button 

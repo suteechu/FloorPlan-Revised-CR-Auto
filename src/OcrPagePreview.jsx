@@ -8,7 +8,6 @@ const OcrPagePreview = ({ file, pageNumber, cropConfigs, activeChannel, onUpdate
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 });
   const [pdfRendered, setPdfRendered] = useState(false);
-  const [canvasScale, setCanvasScale] = useState(1);
 
   // Render PDF only when file or pageNumber changes
   useEffect(() => {
@@ -29,7 +28,6 @@ const OcrPagePreview = ({ file, pageNumber, cropConfigs, activeChannel, onUpdate
           
           const viewport = page.getViewport({ scale: 1 });
           const scale = 450 / viewport.width; 
-          setCanvasScale(scale);
           const scaledViewport = page.getViewport({ scale });
 
           canvas.height = scaledViewport.height;

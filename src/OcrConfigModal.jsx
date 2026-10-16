@@ -1,6 +1,42 @@
 import React from 'react';
 import OcrPagePreview from './OcrPagePreview';
 
+const ChannelConfigCard = ({ title, titleColor, config, setConfig, previewImage, previewMatch, previewRaw, hasSettings = true, note, maxRange = 50 }) => (
+  <div style={{ border: '1px solid var(--border-color)', padding: '16px', background: 'var(--bg-app)', display: 'flex', flexDirection: 'column', gap: '12px', borderRadius: '4px' }}>
+    <strong style={{ color: titleColor, display: 'block', fontSize: '0.9rem' }}>{title}</strong>
+    
+    {hasSettings && config && setConfig && (
+      <div style={{ borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '12px 0' }}>
+        <div style={{ marginBottom: '12px' }}>
+          <label style={{ display: 'block', marginBottom: '6px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>กว้าง (WIDTH): {config.width}%</label>
+          <input type="range" min="5" max={maxRange} value={config.width} onChange={(e) => setConfig({...config, width: parseInt(e.target.value)})} />
+        </div>
+        <div style={{ marginBottom: '12px' }}>
+          <label style={{ display: 'block', marginBottom: '6px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>สูง (HEIGHT): {config.height}%</label>
+          <input type="range" min="5" max={maxRange} value={config.height} onChange={(e) => setConfig({...config, height: parseInt(e.target.value)})} />
+        </div>
+        <div style={{ marginBottom: '12px' }}>
+          <label style={{ display: 'block', marginBottom: '6px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>เลื่อนซ้าย (X-OFFSET): {config.xOffset || 0}%</label>
+          <input type="range" min="0" max="95" value={config.xOffset || 0} onChange={(e) => setConfig({...config, xOffset: parseInt(e.target.value)})} />
+        </div>
+        <div>
+          <label style={{ display: 'block', marginBottom: '6px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>เลื่อนขึ้น (Y-OFFSET): {config.yOffset || 0}%</label>
+          <input type="range" min="0" max="95" value={config.yOffset || 0} onChange={(e) => setConfig({...config, yOffset: parseInt(e.target.value)})} />
+        </div>
+      </div>
+    )}
+
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '8px' }}>
+      {previewImage ? 
+        <div style={{ textAlign: 'center', background: '#000' }}><img src={previewImage} alt={title} style={{ maxWidth: '100%', maxHeight: '70px' }} /></div> : 
+        <div style={{ height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--border-color)', fontSize: '0.8rem', background: 'var(--bg-panel)', borderRadius: '2px' }}>N/A</div>
+      }
+      <div style={{ fontSize: '0.85rem', color: previewMatch && previewMatch.includes('❌') ? 'var(--color-down)' : titleColor, fontWeight: 'bold' }}>{previewMatch || 'N/A'}</div>
+      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', wordBreak: 'break-all' }}>ข้อความดิบ: {note ? (previewRaw ? previewRaw.substring(0,30)+'...' : '-') : (previewRaw || '-')}</div>
+    </div>
+  </div>
+);
+
 export default function OcrConfigModal({
   showOcrConfig,
   setShowOcrConfig,
@@ -21,7 +57,8 @@ export default function OcrConfigModal({
   aiEnabled,
   toggleAiMode,
   geminiApiKey,
-  setGeminiApiKey
+  setGeminiApiKey,
+  onResetDefaults
 }) {
   const [activeChannel, setActiveChannel] = React.useState('');
 
@@ -33,42 +70,6 @@ export default function OcrConfigModal({
     else if (channel === 'cover') setCoverCropConfig(newConfig);
     else if (channel === 'crList') setCrListCropConfig(newConfig);
   };
-
-  const ChannelConfigCard = ({ title, titleColor, config, setConfig, previewImage, previewMatch, previewRaw, hasSettings = true, note, maxRange = 50 }) => (
-    <div style={{ border: '1px solid var(--border-color)', padding: '16px', background: 'var(--bg-app)', display: 'flex', flexDirection: 'column', gap: '12px', borderRadius: '4px' }}>
-      <strong style={{ color: titleColor, display: 'block', fontSize: '0.9rem' }}>{title}</strong>
-      
-      {hasSettings && config && setConfig && (
-        <div style={{ borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)', padding: '12px 0' }}>
-          <div style={{ marginBottom: '12px' }}>
-            <label style={{ display: 'block', marginBottom: '6px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>กว้าง (WIDTH): {config.width}%</label>
-            <input type="range" min="5" max={maxRange} value={config.width} onChange={(e) => setConfig({...config, width: parseInt(e.target.value)})} />
-          </div>
-          <div style={{ marginBottom: '12px' }}>
-            <label style={{ display: 'block', marginBottom: '6px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>สูง (HEIGHT): {config.height}%</label>
-            <input type="range" min="5" max={maxRange} value={config.height} onChange={(e) => setConfig({...config, height: parseInt(e.target.value)})} />
-          </div>
-          <div style={{ marginBottom: '12px' }}>
-            <label style={{ display: 'block', marginBottom: '6px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>เลื่อนซ้าย (X-OFFSET): {config.xOffset || 0}%</label>
-            <input type="range" min="0" max="95" value={config.xOffset || 0} onChange={(e) => setConfig({...config, xOffset: parseInt(e.target.value)})} />
-          </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '6px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>เลื่อนขึ้น (Y-OFFSET): {config.yOffset || 0}%</label>
-            <input type="range" min="0" max="95" value={config.yOffset || 0} onChange={(e) => setConfig({...config, yOffset: parseInt(e.target.value)})} />
-          </div>
-        </div>
-      )}
-
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '8px' }}>
-        {previewImage ? 
-          <div style={{ textAlign: 'center', background: '#000' }}><img src={previewImage} alt={title} style={{ maxWidth: '100%', maxHeight: '70px' }} /></div> : 
-          <div style={{ height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--border-color)', fontSize: '0.8rem', background: 'var(--bg-panel)', borderRadius: '2px' }}>N/A</div>
-        }
-        <div style={{ fontSize: '0.85rem', color: previewMatch && previewMatch.includes('❌') ? 'var(--color-down)' : titleColor, fontWeight: 'bold' }}>{previewMatch || 'N/A'}</div>
-        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', wordBreak: 'break-all' }}>ข้อความดิบ: {note ? (previewRaw ? previewRaw.substring(0,30)+'...' : '-') : (previewRaw || '-')}</div>
-      </div>
-    </div>
-  );
   
   return (
     <div className="modal-overlay" onClick={() => setShowOcrConfig(false)}>
@@ -192,7 +193,10 @@ export default function OcrConfigModal({
           </div>
         </div>
 
-        <div style={{ textAlign: 'right', marginTop: '20px', borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
+          <button className="btn-tool btn-reset" onClick={onResetDefaults} style={{ padding: '8px 16px', cursor: 'pointer' }}>
+            ↺ คืนค่าเริ่มต้น (Reset Defaults)
+          </button>
           <button className="btn-secondary" onClick={() => setShowOcrConfig(false)} style={{ padding: '10px 24px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>ปิดหน้าต่าง</button>
         </div>
       </div>

@@ -27,7 +27,7 @@ export const processOcrOnPage = async (pdf, pageNum, config, activeCats, worker 
   // xOffset moves it left from the right edge, yOffset moves it up from the bottom edge.
   // Wait, if they want to push it DOWN from the TOP, we might need a different anchor.
   // Let's use xOffset (Right to Left) and yOffset (Bottom to Top)
-  const cropX = viewport.width - cropWidth - (viewport.width * ((config.xOffset || 0) / 100));
+  let cropX = viewport.width - cropWidth - (viewport.width * ((config.xOffset || 0) / 100));
   let cropY = viewport.height - cropHeight - (viewport.height * ((config.yOffset || 0) / 100));
   
   // Ensure it doesn't go out of bounds
