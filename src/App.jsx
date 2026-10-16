@@ -240,10 +240,7 @@ function App() {
         {/* 🌟 Header & Control Panel */}
         <div className="glass-panel" style={{ padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, gap: '20px' }}>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '46px', height: '46px', background: 'var(--color-primary)', color: '#fff', fontWeight: '900', fontSize: '1.3rem', borderRadius: '12px', boxShadow: '0 4px 15px rgba(255, 23, 68, 0.4)', letterSpacing: '1px' }}>
-              FR
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
                 <h1 style={{ margin: 0, fontSize: '1.4rem', fontWeight: '900', letterSpacing: '1px', color: 'var(--color-primary)' }}>FloorPlan-Revised-CR-Auto</h1>
