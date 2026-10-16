@@ -247,14 +247,15 @@ function App() {
                 <span className="badge-primary" style={{ whiteSpace: 'nowrap' }}>v4.1</span>
               </div>
               
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 'bold', marginRight: '4px' }}>หมวดหมู่ (FILTER):</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'nowrap' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 'bold', marginRight: '4px', whiteSpace: 'nowrap' }}>หมวดหมู่ (FILTER):</span>
                 {CATEGORIES.map(cat => (
                   <button 
                     key={cat}
                     onClick={() => !isProcessing && setActiveCategories(prev => ({...prev, [cat]: !prev[cat]}))}
                     className={`cat-toggle ${activeCategories[cat] ? 'active' : 'inactive'}`}
                     disabled={isProcessing}
+                    style={{ flexShrink: 0, padding: '2px 7px' }}
                     title={activeCategories[cat] ? `ค้นหาหมวด ${cat}` : `ข้ามหมวด ${cat}`}
                   >
                     {cat}

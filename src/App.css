@@ -67,6 +67,8 @@ body, html { margin: 0; padding: 0; min-height: 100%; font-family: 'Inter', 'Sar
   font-family: 'JetBrains Mono', monospace;
   font-weight: 600;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .cat-toggle.active {
   background: rgba(0, 135, 90, 0.1); 
